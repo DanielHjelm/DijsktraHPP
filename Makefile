@@ -1,3 +1,4 @@
+# Make file
 functions:
 	gcc -o functions functions.h
 

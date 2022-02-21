@@ -1,4 +1,4 @@
-// Serial implementation of the Dijkstras search algorithm
+/// Serial implementation of the Dijkstras search algorithm 
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
