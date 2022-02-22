@@ -3,14 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
-
-// 
-static double get_wall_seconds() {
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  double seconds = tv.tv_sec + (double)tv.tv_usec / 1000000;
-  return seconds;
-}
+#include <omp.h>
 
 // Function that generates a random adjacency matrix
 void GenerateAdjacencyMatrix(int size, int **matrix) {
@@ -56,13 +49,14 @@ void printMatrix(int size, int **matrix) {
 
 
 // Function that finds the position with the minimum distance 
-int MinimumDistance(int distanceArray[], int visitedArray[], int size){
+int MinimumDistance(int distanceArray[], int visitedArray[], int size, int numberOfThreads){
     // Initilize variables
     int minimum = INT_MAX;
     int i, index;
 
     // Find the index of the minimum distance if it i smaller than the value in distanceArray
     // and if we have not already visited it
+    #pragma omp parallel for num_threads(numberOfThreads)
     for (i = 0; i < size; i++){
         if(distanceArray[i]<= minimum && visitedArray[i]==0){
             minimum = distanceArray[i];
@@ -83,7 +77,7 @@ void PrintDijkstra(int distanceArray[], int size)
 }
 
 // The Dijkstras algorithm for finding the shortest path 
-void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
+void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int numberOfThreads, int start){
     // Loop variables
     int i, j, k; 
 
@@ -105,10 +99,11 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 
         // Fetch the position with minimum distance from the MinimumDistance function and
         // updated it so it is visited
-        int min  = MinimumDistance(distanceArray, visitedArray, size);
+        int min  = MinimumDistance(distanceArray, visitedArray, size, numberOfThreads);
         visitedArray[min] = 1;
 
         // For the picked position, update all the adjacent values
+        #pragma omp parallel for num_threads(numberOfThreads)
         for (k = 0; k < size; k++){
 
             // Condition for updating the value in distanceArray:
@@ -139,15 +134,16 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 int main(int argc, char *argv[])
 {   
     // Check input arguments
-    if (argc != 2)
+    if (argc != 3)
     {
-        printf("Please provide the size of the adjenceny matrix\n");
+        printf("Please provide the size of the adjenceny matrix and the number of threads\n");
         exit(EXIT_FAILURE);
     }
     // Initiliaze variables
      int i;
      int **matrix;
      int size = atoi(argv[1]);
+     int numberOfThreads = atoi(argv[2]);
     
     // Allocate memory for the matrix
     matrix= malloc(size * sizeof(int *));
@@ -167,15 +163,15 @@ int main(int argc, char *argv[])
     // printMatrix(size, matrix);
 
     // Start timing
-    double startTime = get_wall_seconds();
+    double startTime = omp_get_wtime();
 
     // Perform Dijsktras
-    DijkstrasAlgorithm(size, matrix, distanceArray, 0);
+    DijkstrasAlgorithm(size, matrix, distanceArray, numberOfThreads ,0);
 
     // Stop timing
-    double endTime = get_wall_seconds() - startTime;
+    double endTime = omp_get_wtime() - startTime;
+    printf("Time: %f for matrix size: %d and %d threads\n", endTime, size, numberOfThreads);
 
-    printf("Time: %f for matrix size: %d\n", endTime, size);
     // int j;
     // for (i = 0; i < size; i++){
     //     printf("%d\n", distanceArray[i]);
