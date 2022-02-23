@@ -41,6 +41,10 @@ void GenerateAdjacencyMatrix(int size, int **matrix) {
     }
 
 }
+
+//******************************************************************************//
+// Helper function for printing the result to check if everything seems good //
+
 // Function that prints the content of a matrix
 void printMatrix(int size, int **matrix) {
     int r, c;
@@ -54,11 +58,24 @@ void printMatrix(int size, int **matrix) {
     }
 }
 
+// Function that prints the position and it distance from the start
+void PrintDijkstra(int distanceArray[], int size, int start)
+{
+    printf("Dijsktras:\n");
+    printf("You picked an adjcency matrix of size %d and starting position %d. \n", size, start);
+    printf("These are the results: \n");
+    for (int i = 0; i < size; i++)
+        printf("%d -> %d: %d\n", start, i+1, distanceArray[i]);
+}
+
+//******************************************************************************//
+// Functions used for the Dijktras search algorithm:
+
 
 // Function that finds the position with the minimum distance 
 int MinimumDistance(int distanceArray[], int visitedArray[], int size){
     // Initilize variables
-    int minimum = INT_MAX;
+    int minimum = 10000;
     int i, index;
 
     // Find the index of the minimum distance if it i smaller than the value in distanceArray
@@ -75,12 +92,7 @@ int MinimumDistance(int distanceArray[], int visitedArray[], int size){
 
 }
 // Function that prints the result of Dijkstra
-void PrintDijkstra(int distanceArray[], int size)
-{
-    printf("Position \t\t Distance from the start\n");
-    for (int i = 0; i < size; i++)
-        printf("%d \t\t\t %d\n", i, distanceArray[i]);
-}
+
 
 // The Dijkstras algorithm for finding the shortest path 
 void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
@@ -93,7 +105,7 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
     // Initiliaze the distanceArray with Infinity since we have no values for it
     // Initiliaze the visitedArray with false since no position is visited yet
     for (i = 0; i < size; i++){
-        distanceArray[i] = INT_MAX;
+        distanceArray[i] = 10000;
         visitedArray[i] = 0;
     }
 
@@ -103,22 +115,35 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
     // Loop through every position to find the shortest distance
     for (j = 0; j < size-1; j++){
 
-        // Fetch the position with minimum distance from the MinimumDistance function and
-        // updated it so it is visited
-        int min  = MinimumDistance(distanceArray, visitedArray, size);
+        // Initiliaze minimum with large number
+        int minimum = 10000;
+        // Intiliaze loop variable and index for the minimum
+        int i, min;
+
+        // Find the minimum distance's index only if it is already not visited.
+        for (i = 0; i < size; i++){
+            if(visitedArray[i]==0 && distanceArray[i]<= minimum ){
+                // Update minimum
+                minimum = distanceArray[i];
+                // Update the index
+                min = i;
+            }
+        }
+
+        // Update it so it is visited
         visitedArray[min] = 1;
 
-        // For the picked position, update all the adjacent values
+        // For the current position, check all other positions and update if conditions are met
         for (k = 0; k < size; k++){
 
             // Condition for updating the value in distanceArray:
             // 1. The pathway from the start through min to k is smaller than the saved distance in distanceArray
             // 2. k is not yet visited (not in visitedArray)
             // 3. min and k are actually adjacent
-            if(distanceArray[min]+matrix[min][k] < distanceArray[k] &&
-                visitedArray[k] == 0 &&
+            if( visitedArray[k] == 0 &&
+                distanceArray[min]+matrix[min][k] < distanceArray[k] &&
                 matrix[min][k] && 
-                distanceArray[min] != INT_MAX ){
+                distanceArray[min] != 10000){
                 
                     distanceArray[k] = distanceArray[min] + matrix[min][k];
 
@@ -130,25 +155,31 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
         
     }
 
-    // Print the Dijkstra
-    // PrintDijkstra(distanceArray, size);
-
 
 }
 
 int main(int argc, char *argv[])
 {   
     // Check input arguments
-    if (argc != 2)
+    if (argc != 3)
     {
-        printf("Please provide the size of the adjenceny matrix\n");
+        printf("Please provide only the size of the adjenceny matrix and the starting position. \n");
         exit(EXIT_FAILURE);
     }
-    // Initiliaze variables
-     int i;
-     int **matrix;
-     int size = atoi(argv[1]);
     
+    // Fetch the input arguments
+    int size = atoi(argv[1]);
+    int start = atoi(argv[2]);
+
+    // Check so that the starting position is actually valid.
+    if (start >= size || start < 0) {
+        printf("The given start position is not a valid position. Please give a start position between 0 and %d. \n", size);
+        exit(EXIT_FAILURE);
+    }
+    
+    // Initiliaze variables
+    int i;
+    int **matrix;
     // Allocate memory for the matrix
     matrix= malloc(size * sizeof(int *));
 
@@ -164,22 +195,21 @@ int main(int argc, char *argv[])
     GenerateAdjacencyMatrix(size, matrix);
 
     // Print adjaceny matrix
-    // printMatrix(size, matrix);
+    printMatrix(size, matrix);
 
     // Start timing
     double startTime = get_wall_seconds();
 
     // Perform Dijsktras
-    DijkstrasAlgorithm(size, matrix, distanceArray, 0);
+    DijkstrasAlgorithm(size, matrix, distanceArray, start);
 
     // Stop timing
     double endTime = get_wall_seconds() - startTime;
 
     printf("Time: %f for matrix size: %d\n", endTime, size);
-    // int j;
-    // for (i = 0; i < size; i++){
-    //     printf("%d\n", distanceArray[i]);
-    // }
+    
+    // Print the Dijkstra
+    PrintDijkstra(distanceArray, size, start);
 
     // Free memory
     

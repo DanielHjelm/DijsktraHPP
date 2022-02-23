@@ -1,9 +1,6 @@
-# Make file
-functions:
-	gcc -o functions functions.h
+Dijkstra:
+	gcc -O2 -ffast-math -march=native serialDijkstra.c -o unoptimized
+	gcc -O2 -ffast-math -march=native serialDijkstraOptimized.c -o optimized
 
-serialDijkstra: functions
-	gcc functions.h serialDijkstra.c -o serialDijkstra
-
-clean: 
-	rm serialDijkstra functions
+clean:
+	rm -r unoptimized optimized

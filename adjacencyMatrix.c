@@ -24,7 +24,7 @@ void GenerateAdjacencyMatrix(int size, int **matrix) {
             }
 
             else{
-                // Create random number between 0-5
+                // Create random number between 0-10
                 int randomNumber = rand() % 10;
                 // Put the random number in the matrix
                 matrix[i][j] = randomNumber;
