@@ -14,12 +14,14 @@ static double get_wall_seconds() {
 }
 
 // Function that generates a random adjacency matrix
+// Function that generates a random adjacency matrix
 void GenerateAdjacencyMatrix(int size, int **matrix) {
+
     // Initiliaze matrix and loop variables
     int i;
     int j;
     // Initialize random number generator
-    srand(0);
+    srand(1);
     // Create adjacency matrix
     for(i = 0; i < size; i++)
     {
@@ -32,10 +34,15 @@ void GenerateAdjacencyMatrix(int size, int **matrix) {
 
             else{
                 // Create random number between 0-5
-                int randomNumber = rand() % 5;
-                // Put the random number in the matrix
-                matrix[i][j] = randomNumber;
-                matrix[j][i] = randomNumber;  
+                int randomNumber = rand() % 10;
+                if (randomNumber > 4){
+                    // Put the random number in the matrix
+                    matrix[i][j] = randomNumber+1;
+                    matrix[j][i] = randomNumber-3;
+                } else {
+                    matrix[i][j] = 10000;
+                    matrix[j][i] = 10000;
+                }
             }
 
         }
@@ -47,26 +54,45 @@ void GenerateAdjacencyMatrix(int size, int **matrix) {
 // Helper function for printing the result to check if everything seems good //
 
 // Function that prints the content of a matrix
-void printMatrix(int size, int **matrix) {
+void PrintMatrix(int size, int **matrix) {
     int r, c;
     for (r=0; r<size; r++)
     {
         for(c=0; c<size; c++)
         {
-            printf("%d     ", matrix[r][c]);
+            if(matrix[r][c] == 10000) {
+                printf("%5s", "Inf");
+            } else {
+                printf("%5d", matrix[r][c]);
+            }
+           
         }
         printf("\n");
     }
 }
 
 // Function printing the results from Dijkstras
-void PrintDijkstra(int distanceArray[], int size, int start)
+// Function printing the results from Dijkstras
+void PrintDijsktra(int **distanceMatrix, int size)
 {
-    printf("Dijsktras:\n");
-    printf("You picked an adjcency matrix of size %d and starting position %d. \n", size, start);
+    printf("Print Dijkstra:\n");
+    printf("You picked an adjcency matrix of size %d \n", size);
     printf("These are the results: \n");
-    for (int i = 0; i < size; i++)
-        printf("%d -> %d: %d\n", start, i+1, distanceArray[i]);
+    int r, c;
+    for (r=0; r<size; r++)
+    {
+        for(c=0; c<size; c++)
+        {
+            if(distanceMatrix[r][c] == 10000) {
+                printf("%5s", "Inf");
+            } else {
+                printf("%5d", distanceMatrix[r][c]);
+            }
+           
+        }
+        printf("\n");
+    }
+    
 }
 
 //******************************************************************************//
@@ -138,64 +164,66 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 int main(int argc, char *argv[])
 {   
     // Check input arguments
-    if (argc != 3)
+    if (argc != 2)
     {
-        printf("Please provide only the size of the adjenceny matrix and the starting position. \n");
+        printf("Please provide only the size of the adjenceny matrix\n");
         exit(EXIT_FAILURE);
     }
     
     // Fetch the input arguments
     int size = atoi(argv[1]);
-    int start = atoi(argv[2]);
-
-    // Check so that the starting position is actually valid.
-    if (start >= size || start < 0) {
-        printf("The given start position is not a valid position. Please give a start position between 0 and %d. \n", size);
-        exit(EXIT_FAILURE);
-    }
     
     // Initiliaze variables
     int i;
     int **matrix;
-    // Allocate memory for the matrix
+    int **distanceMatrix;
+
+    // Allocate memory for the matrix and distanceMatrix
     matrix= malloc(size * sizeof(int *));
+    distanceMatrix = malloc(size * sizeof(int *));
 
     for (i = 0; i < size; i++)
     {
         matrix[i] = malloc(size * sizeof(int));
+        distanceMatrix[i] = malloc(size * sizeof(int));
     }
 
-     // Array representing the shortest distance from the start to a position (pos) in the matrix
-    int *distanceArray = malloc(size * sizeof(int *));
    
     // Create adjacency matrix:
+    
     GenerateAdjacencyMatrix(size, matrix);
 
     // Print adjaceny matrix
-    // printMatrix(size, matrix);
+    PrintMatrix(size, matrix);
 
     // Start timing
     double startTime = get_wall_seconds();
 
-    // Perform Dijsktras
-    DijkstrasAlgorithm(size, matrix, distanceArray, start);
+    // Perform Dijsktra on every start position
+    int start;
+    for(start=0; start < size; start++) {
+        
+        DijkstrasAlgorithm(size, matrix, distanceMatrix[start], start);
 
+    }
+    
     // Stop timing
     double endTime = get_wall_seconds() - startTime;
 
     printf("Time: %f for matrix size: %d\n", endTime, size);
     
-    // Print the Dijkstra
-    // PrintDijkstra(distanceArray, size, start);
+    // Print the result 
+    PrintDijsktra(distanceMatrix, size);
 
     // Free memory
     
     for (i = 0; i < size; i++)
     {
         free(matrix[i]);
+        free(distanceMatrix[i]);
     }
     free(matrix);
-    free(distanceArray);
+    free(distanceMatrix);
     
     return 0;
 }
