@@ -1,5 +1,4 @@
 /// Serial implementation of the Dijkstras search algorithm 
-#include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
@@ -61,7 +60,7 @@ void PrintMatrix(int size, int **matrix) {
         for(c=0; c<size; c++)
         {
             if(matrix[r][c] == 10000) {
-                printf("%5s", "Inf");
+                printf("%5s", "X");
             } else {
                 printf("%5d", matrix[r][c]);
             }
@@ -72,10 +71,9 @@ void PrintMatrix(int size, int **matrix) {
 }
 
 // Function printing the results from Dijkstras
-// Function printing the results from Dijkstras
 void PrintDijsktra(int **distanceMatrix, int size)
 {
-    printf("Print Dijkstra:\n");
+    printf("Dijkstra:\n");
     printf("You picked an adjcency matrix of size %d \n", size);
     printf("These are the results: \n");
     int r, c;
@@ -194,7 +192,7 @@ int main(int argc, char *argv[])
     GenerateAdjacencyMatrix(size, matrix);
 
     // Print adjaceny matrix
-    PrintMatrix(size, matrix);
+    // PrintMatrix(size, matrix);
 
     // Start timing
     double startTime = get_wall_seconds();
@@ -213,7 +211,7 @@ int main(int argc, char *argv[])
     printf("Time: %f for matrix size: %d\n", endTime, size);
     
     // Print the result 
-    PrintDijsktra(distanceMatrix, size);
+    // PrintDijsktra(distanceMatrix, size);
 
     // Free memory
     

@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
+#include <omp.h>
+
+
 
 //******************************************************************************//
 // Time taking function
@@ -166,7 +169,7 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 int main(int argc, char *argv[])
 {   
     // Check input arguments
-    if (argc != 2)
+    if (argc != 3)
     {
         printf("Please provide only the size of the adjenceny matrix\n");
         exit(EXIT_FAILURE);
@@ -174,6 +177,7 @@ int main(int argc, char *argv[])
     
     // Fetch the input arguments
     int size = atoi(argv[1]);
+    int numberOfThreads = atoi(argv[2]);
     
     // Initiliaze variables
     int i;
@@ -199,18 +203,19 @@ int main(int argc, char *argv[])
     // PrintMatrix(size, matrix);
 
     // Start timing
-    double startTime = get_wall_seconds();
+    double startTime = omp_get_wtime();
 
     // Perform Dijsktra on every start position
     int start;
+    #pragma omp parallel for num_threads(numberOfThreads)
     for(start=0; start < size; start++) {
         
         DijkstrasAlgorithm(size, matrix, distanceMatrix[start], start);
 
     }
-    
+
     // Stop timing
-    double endTime = get_wall_seconds() - startTime;
+    double endTime = omp_get_wtime() - startTime;
 
     printf("Time: %f for matrix size: %d\n", endTime, size);
     
