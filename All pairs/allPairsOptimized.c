@@ -117,8 +117,10 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 
         // Initiliaze minimum with large number
         int minimum = 10000;
+
         // Intiliaze loop variable and index for the minimum
-        int i, min;
+        int i;
+        int min = 0;
 
         // Find the minimum distance's index only if it is already not visited.
         for (i = 0; i < size; i++){
@@ -195,9 +197,8 @@ int main(int argc, char *argv[])
     GenerateAdjacencyMatrix(size, matrix);
 
     // Print adjaceny matrix
-    printf("\n");
-    PrintMatrix(size, matrix);
-    printf("\n");
+    // PrintMatrix(size, matrix);
+
     // Start timing
     double startTime = get_wall_seconds();
 
@@ -215,9 +216,8 @@ int main(int argc, char *argv[])
     printf("Time: %f for matrix size: %d\n", endTime, size);
     
     // Print the result
-    printf("\n");
-    PrintDijsktra(distanceMatrix, size);
-    printf("\n");
+    // PrintDijsktra(distanceMatrix, size);
+
     // Free memory
     
     for (i = 0; i < size; i++)

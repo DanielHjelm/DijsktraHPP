@@ -114,7 +114,8 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
         // Initiliaze minimum with large number
         int minimum = 10000;
         // Intiliaze loop variable and index for the minimum
-        int i, min;
+        int i;
+        int min = 0;
 
         // Find the minimum distance's index only if it is already not visited.
         for (i = 0; i < size; i++){
