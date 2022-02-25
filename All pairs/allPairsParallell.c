@@ -1,4 +1,3 @@
-/// Serial implementation of the Dijkstras search algorithm 
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
@@ -7,13 +6,6 @@
 
 
 //******************************************************************************//
-// Time taking function
-static double get_wall_seconds() {
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  double seconds = tv.tv_sec + (double)tv.tv_usec / 1000000;
-  return seconds;
-}
 
 // Function that generates a random adjacency matrix
 void GenerateAdjacencyMatrix(int size, int **matrix) {
@@ -62,7 +54,7 @@ void PrintMatrix(int size, int **matrix) {
         for(c=0; c<size; c++)
         {
             if(matrix[r][c] == 10000) {
-                printf("%5s", "Inf");
+                printf("%5s", "X");
             } else {
                 printf("%5d", matrix[r][c]);
             }
@@ -98,7 +90,6 @@ void PrintDijsktra(int **distanceMatrix, int size)
 
 //******************************************************************************//
 
-// The Dijkstras algorithm for finding the shortest path 
 // The Dijkstras algorithm for finding the shortest path 
 void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
     // Loop variables
@@ -165,6 +156,8 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 
 
 }
+
+//******************************************************************************//
 
 int main(int argc, char *argv[])
 {   

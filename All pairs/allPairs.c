@@ -1,4 +1,3 @@
-/// Serial implementation of the Dijkstras search algorithm 
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>

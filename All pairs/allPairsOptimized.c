@@ -1,4 +1,3 @@
-/// Serial implementation of the Dijkstras search algorithm 
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
@@ -59,7 +58,7 @@ void PrintMatrix(int size, int **matrix) {
         for(c=0; c<size; c++)
         {
             if(matrix[r][c] == 10000) {
-                printf("%5s", "Inf");
+                printf("%5s", "X");
             } else {
                 printf("%5d", matrix[r][c]);
             }
@@ -74,7 +73,7 @@ void PrintDijsktra(int **distanceMatrix, int size)
 {
     printf("Dijkstra:\n");
     printf("You picked an adjcency matrix of size %d \n", size);
-    printf("These are the results: \n");
+    printf("These are the results: \n\n");
     int r, c;
     for (r=0; r<size; r++)
     {
@@ -95,7 +94,6 @@ void PrintDijsktra(int **distanceMatrix, int size)
 
 //******************************************************************************//
 
-// The Dijkstras algorithm for finding the shortest path 
 // The Dijkstras algorithm for finding the shortest path 
 void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
     // Loop variables
@@ -163,6 +161,7 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 
 }
 
+//******************************************************************************//
 int main(int argc, char *argv[])
 {   
     // Check input arguments
@@ -196,8 +195,9 @@ int main(int argc, char *argv[])
     GenerateAdjacencyMatrix(size, matrix);
 
     // Print adjaceny matrix
-    // PrintMatrix(size, matrix);
-
+    printf("\n");
+    PrintMatrix(size, matrix);
+    printf("\n");
     // Start timing
     double startTime = get_wall_seconds();
 
@@ -214,9 +214,10 @@ int main(int argc, char *argv[])
 
     printf("Time: %f for matrix size: %d\n", endTime, size);
     
-    // Print the result 
-    // PrintDijsktra(distanceMatrix, size);
-
+    // Print the result
+    printf("\n");
+    PrintDijsktra(distanceMatrix, size);
+    printf("\n");
     // Free memory
     
     for (i = 0; i < size; i++)

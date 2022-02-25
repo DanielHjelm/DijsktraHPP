@@ -3,6 +3,7 @@
 #include <sys/time.h>
 #include <omp.h>
 
+// Function that checks that the output array is the same. 
 int CheckMatrix(int **matrix1, int **matrix2, int size){
     int i, j;
     for (i = 0; i < size; i++){
@@ -103,7 +104,6 @@ void PrintDijsktra(int **distanceMatrix, int size)
 //******************************************************************************//
 
 // The Dijkstras algorithm for finding the shortest path 
-// The Dijkstras algorithm for finding the shortest path 
 void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
     // Loop variables
     int i, j, k; 
@@ -170,6 +170,7 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 
 }
 
+//******************************************************************************//
 int main(int argc, char *argv[])
 {   
     // Check input arguments
