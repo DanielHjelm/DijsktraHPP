@@ -20,7 +20,7 @@ for row in paralell:
 
 
 plt.plot(serialList, serialNumbers, label = "Serial")
-plt.plot(paralellList, paralellNum, label = "Parallel")
+plt.plot(paralellList, paralellNum, label = "Parallel with 16 threads")
 plt.legend()
 plt.xlabel('Number of elements in adjacency matrix ', fontsize = 12)
 plt.ylabel('Time', fontsize = 12)

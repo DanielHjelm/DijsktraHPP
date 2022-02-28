@@ -4,11 +4,11 @@
 #include <omp.h>
 
 // Function that checks that the output array is the same. 
-int CheckMatrix(int **matrix1, int **matrix2, int size){
+int CheckMatrix(int **matrix1, int **matrix2, int **matrix3, int size){
     int i, j;
     for (i = 0; i < size; i++){
         for (j = 0; j < size; j++){
-            if(matrix1[i][j] != matrix2[i][j]){
+            if(matrix1[i][j] != matrix2[i][j] || matrix1[i][j] != matrix3[i][j] || matrix2[i][j] != matrix3[i][j]){
                 return 0;
             }
 
@@ -111,6 +111,71 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
     // Array representing if the position is visited or not
     int visitedArray[size];
 
+    // Initiliaze the distanceArray with large number since we have no values for it yet
+    // Initiliaze the visitedArray with false since no position is visited yet
+    for (i = 0; i < size; i++){
+        distanceArray[i] = 10000;
+        visitedArray[i] = 0;
+    }
+
+    // The distance from the starting position (start) to itself is set to zero
+    distanceArray[start] = 0;
+
+    // Loop through every position to find the shortest distance
+    for (j = 0; j < size-1; j++){
+
+        // Initiliaze minimum with large number
+        int minimum = 10000;
+        // Intiliaze loop variable and index for the minimum
+        int i;
+        int min = 0;
+
+        // Find the minimum distance's index only if it is already not visited.
+        for (i = 0; i < size; i++){
+            if(visitedArray[i]==0 && distanceArray[i]<= minimum ){
+                // Update minimum
+                minimum = distanceArray[i];
+                // Update the index
+                min = i;
+            }
+        }
+
+        // Update it so it is visited
+        visitedArray[min] = 1;
+
+        // For the current position, check all other positions and update if conditions are met
+        for (k = 0; k < size; k++){
+
+            // Condition for updating the value in distanceArray:
+            // 1. The pathway from the start through min to k is smaller than the saved distance in distanceArray
+            // 2. k is not yet visited (not in visitedArray)
+            // 3. min and k are actually adjacent
+            if( visitedArray[k] == 0 &&
+                distanceArray[min]+matrix[min][k] < distanceArray[k] &&
+                matrix[min][k] && 
+                distanceArray[min] != 10000){
+                
+                    distanceArray[k] = distanceArray[min] + matrix[min][k];
+
+
+            }
+
+        }
+
+        
+    }
+
+
+}
+
+// The Dijkstras algorithm for finding the shortest path 
+void DijkstrasAlgorithmOptimized(int size, int **matrix, int *distanceArray, int start){
+    // Loop variables
+    int i, j, k; 
+
+    // Array representing if the position is visited or not
+    int visitedArray[size];
+
     // Initiliaze the distanceArray with large since we have no values for it yet
     // Initiliaze the visitedArray with false (0) since no position is visited yet
     for (i = 0; i < size; i++){
@@ -189,12 +254,14 @@ int main(int argc, char *argv[])
     int i;
     int **matrix;
     int **distanceMatrix;
+    int **distanceMatrixOptimized;
     int **distanceMatrixParallell;
 
-    // Allocate memory for the matrix and distanceMatrix
+    // Allocate memory for the matrices
     matrix= malloc(size * sizeof(int *));
     distanceMatrix = malloc(size * sizeof(int *));
     distanceMatrixParallell = malloc(size * sizeof(int *));
+    distanceMatrixOptimized =  malloc(size * sizeof(int *));
 
 
     for (i = 0; i < size; i++)
@@ -202,6 +269,8 @@ int main(int argc, char *argv[])
         matrix[i] = malloc(size * sizeof(int));
         distanceMatrix[i] = malloc(size * sizeof(int));
         distanceMatrixParallell[i] = malloc(size * sizeof(int));
+        distanceMatrixOptimized[i] = malloc(size * sizeof(int *));
+
     }
 
    
@@ -226,9 +295,17 @@ int main(int argc, char *argv[])
 
     }
 
+    int start3;
+    for(start3=0; start3 < size; start3++) {
+        
+        DijkstrasAlgorithmOptimized(size, matrix, distanceMatrixOptimized[start3], start3);
+
+    }
+
+
     // Check the output
     
-    if(CheckMatrix(distanceMatrix, distanceMatrixParallell, size)){
+    if(CheckMatrix(distanceMatrix, distanceMatrixParallell, distanceMatrixOptimized, size)){
         printf("The arrays are the same, everything is OK!\n");
     }else {
         printf("The arrays are not the same, something is wrong!\nn");
