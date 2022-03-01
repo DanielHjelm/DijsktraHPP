@@ -92,8 +92,9 @@ void PrintDijsktra(int **distanceMatrix, int size)
 
 // The Dijkstras algorithm for finding the shortest path 
 void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
+    
     // Loop variables
-    int i, j, k; 
+    int i, j, k, l; 
 
     // Array representing if the position is visited or not
     int visitedArray[size];
@@ -113,17 +114,18 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 
         // Initiliaze minimum with large number
         int minimum = 10000;
+
         // Intiliaze loop variable and index for the minimum
         int i;
         int min = 0;
 
         // Find the minimum distance's index only if it is already not visited.
-        for (i = 0; i < size; i++){
-            if(visitedArray[i]==0 && distanceArray[i]<= minimum ){
+        for (k = 0; k < size; k++){
+            if(visitedArray[k]==0 && distanceArray[k]<= minimum ){
                 // Update minimum
-                minimum = distanceArray[i];
+                minimum = distanceArray[k];
                 // Update the index
-                min = i;
+                min = k;
             }
         }
         
@@ -134,18 +136,18 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
         int distMin = distanceArray[min];
         
         // For the current position, check all other positions and update if conditions are met
-        for (k = 0; k < size; k++){
+        for (l = 0; l < size; l++){
 
             // Condition for updating the value in distanceArray:
-            // 1. k is not yet visited (not in visitedArray)
-            // 2. min and k are actually adjacent
-            // 3. The pathway from the start through min to k is smaller than the saved distance in distanceArray
-            if(distMin+matrix[min][k] < distanceArray[k] &&
-                visitedArray[k] == 0 &&
-                matrix[min][k] && 
+            // 1. l is not yet visited (not in visitedArray)
+            // 2. min and l are actually adjacent
+            // 3. The pathway from the start through min to l is smaller than the saved distance in distanceArray
+            if(distMin+matrix[min][l] < distanceArray[l] &&
+                visitedArray[l] == 0 &&
+                matrix[min][l] && 
                 distMin != 10000){
                 
-                    distanceArray[k] = distMin + matrix[min][k];
+                    distanceArray[l] = distMin + matrix[min][l];
 
 
             }
@@ -154,8 +156,7 @@ void DijkstrasAlgorithm(int size, int **matrix, int *distanceArray, int start){
 
         
     }
-
-
+   
 }
 
 //******************************************************************************//
